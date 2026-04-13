@@ -2,6 +2,7 @@
 
 **InCore** is a minimalist, text editor designed with local encryption and explicit, user-controlled operations
 
+**Note**: InCore is under development and is subjected to changes
 
 ## Features
 

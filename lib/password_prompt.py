@@ -4,7 +4,6 @@ password_prompt.py
 GUI prompt to securely retrieve password
 
 Author: Ghost In A Jar
-Version: 0.1.0
 """
 
 from PyQt5.QtWidgets import *
@@ -13,8 +12,48 @@ from PyQt5.QtCore import *
 class PasswordTools:
     def __init__(self):
         self.final_password = None
+        
+    def get_password_dec(self):
+        dialog = QDialog()
+        dialog.setWindowTitle("Enter Password")
+        dialog.setFixedSize(300, 130)
 
-    def get_password(self):
+        layout = QVBoxLayout()
+
+        layout.addWidget(QLabel("Password:"))
+        entry_password = QLineEdit()
+        entry_password.setEchoMode(QLineEdit.Password)
+        layout.addWidget(entry_password)
+        
+        show_checkbox = QCheckBox("Show Password")
+        layout.addWidget(show_checkbox)
+        
+        def show_password():
+            if show_checkbox.isChecked():
+                entry_password.setEchoMode(QLineEdit.Normal)
+            else:
+                entry_password.setEchoMode(QLineEdit.Password)
+            
+        show_checkbox.stateChanged.connect(show_password)
+    
+        submit_button = QPushButton("Submit")
+        layout.addWidget(submit_button)
+        
+        def submit_password():
+            try:
+                final_password = bytearray(entry_password.text().encode())
+                dialog.accept()
+            finally:
+                entry_password.clear()
+
+        submit_button.clicked.connect(submit_password)
+    
+        dialog.setLayout(layout)
+        dialog.exec_()
+
+        return self.final_password
+
+    def get_password_enc(self):
         dialog = QDialog()
         dialog.setWindowTitle("Enter Password")
         dialog.setFixedSize(300, 200)

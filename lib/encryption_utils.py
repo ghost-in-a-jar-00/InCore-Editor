@@ -4,7 +4,6 @@ encryption_utils.py
 Handles encryption related stuff
 
 Author: Ghost In A Jar
-Version: 0.1.0
 """
 
 import nacl.secret

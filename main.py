@@ -4,7 +4,6 @@ main.py
 InCore - Minimalist text editor with local encryption and explicit user-controlled operations.
 
 Author: Ghost In A Jar
-Version: 0.1.0
 """
 
 import os
@@ -121,7 +120,7 @@ class MainUI(QMainWindow):
                     self.set_variables.save_path_settings(self.config_path, "home", {selected_dir})
                 
                 with open(path, "r") as existing_file:
-                    decrypted_file = self.encryption_tools.decrypt_text(self.password_tools.get_password(), existing_file.read())
+                    decrypted_file = self.encryption_tools.decrypt_text(self.password_tools.get_password_dec(), existing_file.read())
                     self.text_box.setText(decrypted_file)
                     
                 self.current_file = path
@@ -144,7 +143,7 @@ class MainUI(QMainWindow):
             
         try:
             with open(self.current_file, "w") as new_file:
-                encrypted_file = self.encryption_tools.encrypt_text(self.password_tools.get_password(), self.text_box.toPlainText())
+                encrypted_file = self.encryption_tools.encrypt_text(self.password_tools.get_password_enc(), self.text_box.toPlainText())
                 new_file.write(encrypted_file)
             self.setWindowTitle(f"InCore ({self.current_file})")
         except Exception as error_message:
