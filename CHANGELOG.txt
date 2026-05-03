@@ -1,3 +1,10 @@
+0.3.0
+
+- Make a file version and format for InCore Editor encrypted files
+- Added default file extension as .icr
+
+---
+
 0.2.0
 
 - Added password field for decryption
