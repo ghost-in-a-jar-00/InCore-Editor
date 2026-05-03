@@ -41,8 +41,12 @@ class PasswordTools:
         
         def submit_password():
             try:
-                final_password = bytearray(entry_password.text().encode())
-                dialog.accept()
+                self.final_password = bytearray(entry_password.text().encode())
+                
+                if not self.final_password:
+                    QMessageBox.warning(dialog, "Warning", "Please enter the password to decrypt its contents")
+                else:
+                    dialog.accept()
             finally:
                 entry_password.clear()
 

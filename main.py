@@ -17,6 +17,9 @@ from PyQt5.QtGui import *
 from lib.password_prompt import PasswordTools
 from lib.encryption_utils import EncryptionTools
 
+class FileConstants:
+    file_extension_name = ".icr"   
+
 class DefaultDirs:
     def __init__(self):
         self.config_path = "config"
@@ -110,7 +113,7 @@ class MainUI(QMainWindow):
         self.setWindowTitle("InCore")
         
     def open_file(self):
-        path, _ = QFileDialog.getOpenFileName(self, "Open File", self.home_dir, "All Files(*)")
+        path, _ = QFileDialog.getOpenFileName(self, "Open File", self.home_dir, f"InCore File (*{FileConstants.file_extension_name});; All Files (*)")
         
         if path:
             try:
@@ -119,7 +122,7 @@ class MainUI(QMainWindow):
                     self.home_dir = selected_dir
                     self.set_variables.save_path_settings(self.config_path, "home", {selected_dir})
                 
-                with open(path, "r") as existing_file:
+                with open(path, "rb") as existing_file:
                     decrypted_file = self.encryption_tools.decrypt_text(self.password_tools.get_password_dec(), existing_file.read())
                     self.text_box.setText(decrypted_file)
                     
@@ -127,14 +130,18 @@ class MainUI(QMainWindow):
                 self.setWindowTitle(f"InCore ({path})")
                 
             except Exception as error_message:
+                self.current_file = None
                 QMessageBox.warning(self, "Error", f"{error_message}")
                 
     def save_file(self):
         if not self.current_file:
-            path, _ = QFileDialog.getSaveFileName(self, "Save File", self.home_dir, "All Files (*)")
+            path, _ = QFileDialog.getSaveFileName(self, "Save File", self.home_dir, f"InCore File (*{FileConstants.file_extension_name});; All Files (*)")
             
             if not path:
                 return
+            
+            if not path.endswith(FileConstants.file_extension_name):
+                path += FileConstants.file_extension_name
             
             selected_dir = os.path.dirname(path)
             self.current_file = path
@@ -142,11 +149,12 @@ class MainUI(QMainWindow):
             self.set_variables.save_path_settings(self.config_path, "home", {selected_dir})
             
         try:
-            with open(self.current_file, "w") as new_file:
+            with open(self.current_file, "wb") as new_file:
                 encrypted_file = self.encryption_tools.encrypt_text(self.password_tools.get_password_enc(), self.text_box.toPlainText())
                 new_file.write(encrypted_file)
             self.setWindowTitle(f"InCore ({self.current_file})")
         except Exception as error_message:
+            self.current_file = None
             QMessageBox.warning(self, "Error", f"{error_message}")
             
     # Global keybinds
